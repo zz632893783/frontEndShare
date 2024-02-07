@@ -1,0 +1,23 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-size: 0;
+  box-sizing: border-box;
+}
+html {
+}
+body {
+/*  touch-action: none;*/
+  touch-action: pan-x pan-y;
+  overflow: hidden; /* 隐藏滚动条，防止页面滚动 */
+}
+
+/* 如果你想要禁止特定元素的缩放，而不是整个页面，可以这样写 */
+
+.no-scale {
+  touch-action: none;
+}
+
+.no-drag {
+  user-select: none; /* 防止文本选择 */
+}

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                font-size: 0;
+                /*text-align: center;*/
+            }
+            canvas {
+                border: 2px solid black;
+                /*margin: 100px auto;*/
+            }
+        </style>
+    </head>
+    <body>
+        <canvas />
+    </body>
+    <script>
+        (function () {
+            let level = 0;
+            const unitSize = 32;
+            // const cols = 114;
+            // const rows = 54;
+            const cols = 30;
+            const rows = 20;
+            const canvas = document.querySelector('canvas');
+            const lineWidth = 4;
+            const point = { x: 0, y: 0 };
+            let lineDashOffset = 0;
+            let visibleCache;
+            let walls;
+            let paths = [{ ...point }];
+            canvas.width = unitSize * cols;
+            canvas.height = unitSize * rows;
+            const ctx = canvas.getContext('2d');
+            function createMaze () {
+                level = level + 1;
+                point.x = point.y = 0;
+                visibleCache = [];
+                walls = [];
+                paths = [{ x: 0, y: 0 }];
+                for (let i = 0; i <= cols; i++) {
+                    for (let j = 0; j <= rows; j++) {
+                        walls.push({ direction: 'vertical', x: i, y: j })
+                        walls.push({ direction: 'horizontal', x: i, y: j })
+                    }
+                }
+                visibleCache.push({ ...point });
+                while (true) {
+                    const directionArr = [];
+                    if (point.y > 0 && !visibleCache.find(n => n.x === point.x && n.y === point.y - 1)) {
+                        directionArr.push('top');
+                    }
+                    if (point.y < rows - 1 && !visibleCache.find(n => n.x === point.x && n.y === point.y + 1)) {
+                        directionArr.push('bottom');
+                    }
+                    if (point.x > 0 && !visibleCache.find(n => n.y === point.y && n.x === point.x - 1)) {
+                        directionArr.push('left');
+                    }
+                    if (point.x < cols - 1 && !visibleCache.find(n => n.y === point.y && n.x === point.x + 1)) {
+                        directionArr.push('right');
+                    }
+                    if (!directionArr.length) {
+                        const target = visibleCache[Math.floor(Math.random() * visibleCache.length)];
+                        point.x = target.x;
+                        point.y = target.y;
+                    } else {
+                        const direction = directionArr[Math.floor(Math.random() * directionArr.length)];
+                        let index
+                        switch (direction) {
+                            case 'top':
+                                point.y = point.y - 1;
+                                index = walls.findIndex(n => n.direction === 'horizontal' && n.x === point.x && n.y - 1 === point.y)
+                                index !== -1 && (walls.splice(index, 1))
+                                break;
+                            case 'bottom':
+                                point.y = point.y + 1;
+                                index = walls.findIndex(n => n.direction === 'horizontal' && n.x === point.x && n.y === point.y)
+                                index !== -1 && (walls.splice(index, 1))
+                                break;
+                            case 'left':
+                                point.x = point.x - 1;
+                                index = walls.findIndex(n => n.direction === 'vertical' && n.y === point.y && n.x - 1 === point.x)
+                                index !== -1 && (walls.splice(index, 1))
+                                break;
+                            case 'right':
+                                point.x = point.x + 1;
+                                index = walls.findIndex(n => n.direction === 'vertical' && n.y === point.y && n.x === point.x)
+                                index !== -1 && (walls.splice(index, 1))
+                                break;
+                        }
+                        visibleCache.push({ ...point });
+                    }
+                    if (point.x === cols - 1 && point.y === rows - 1) {
+                        break;
+                    }
+                }
+                point.x = point.y = 0;
+                draw();
+            }
+            function draw () {
+                ctx.clearRect(0, 0, cols * unitSize, rows * unitSize);
+                // ctx.font = 'bold 160px Microsoft Yahei';
+                // ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';
+                // ctx.textAlign = 'center';
+                // ctx.textBaseline = 'middle';
+                // ctx.fillText(level, cols * unitSize / 2, rows * unitSize / 2);
+                ctx.strokeStyle = 'black';
+                ctx.lineWidth = lineWidth;
+                walls.forEach(n => {
+                    if (n.direction === 'vertical') {
+                        ctx.beginPath();
+                        ctx.moveTo(n.x * unitSize, n.y * unitSize);
+                        ctx.lineTo(n.x * unitSize, n.y * unitSize + unitSize);
+                        ctx.stroke();
+                        ctx.closePath();
+                    }
+                    if (n.direction === 'horizontal') {
+                        ctx.beginPath();
+                        ctx.moveTo(n.x * unitSize, n.y * unitSize);
+                        ctx.lineTo(n.x * unitSize + unitSize, n.y * unitSize);
+                        ctx.stroke();
+                        ctx.closePath();
+                    }
+                });
+                ctx.beginPath();
+                paths.forEach((item, index) => {
+                    const x = item.x * unitSize + lineWidth / 2 + (unitSize - lineWidth) / 2;
+                    const y = item.y * unitSize + lineWidth / 2 + (unitSize - lineWidth) / 2;
+                    ctx[index === 0 ? 'moveTo' : 'lineTo'](x, y)
+                });
+                ctx.strokeStyle = 'red';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([4, 2]);
+                ctx.lineDashOffset = lineDashOffset;
+                lineDashOffset = (lineDashOffset + 5) % 6;
+                ctx.stroke();
+                ctx.closePath();
+                ctx.setLineDash([0]);
+                const centerX = point.x * unitSize + unitSize / 2;
+                const centerY = point.y * unitSize + unitSize / 2;
+                ctx.beginPath();
+                // ctx.arc(point.x * unitSize + unitSize / 2, point.y * unitSize + unitSize / 2, unitSize / 4, 0, 2 * Math.PI);
+                ctx.moveTo(centerX - unitSize / 4, centerY - unitSize / 4);
+                ctx.lineTo(centerX + unitSize / 4, centerY - unitSize / 4);
+                ctx.lineTo(centerX + unitSize / 4, centerY + unitSize / 4);
+                ctx.lineTo(centerX - unitSize / 4, centerY + unitSize / 4);
+                ctx.closePath()
+                ctx.fillStyle = 'red';
+                ctx.fill();
+                const endX = (cols - 1) * unitSize;
+                const endY = (rows - 1) * unitSize;
+                ctx.strokeStyle = 'red';
+                ctx.beginPath();
+                ctx.moveTo(endX + 1 * unitSize / 4, endY + 1 * unitSize / 4);
+                ctx.lineTo(endX + 3 * unitSize / 4, endY + 3 * unitSize / 4);
+                ctx.closePath()
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(endX + 3 * unitSize / 4, endY + 1 * unitSize / 4);
+                ctx.lineTo(endX + 1 * unitSize / 4, endY + 3 * unitSize / 4);
+                ctx.closePath()
+                ctx.stroke();
+            }
+            createMaze();
+            window.onkeydown = e => {
+                let target;
+                switch (e.key) {
+                    case 'ArrowUp':
+                    case 'w':
+                        // visibleCache.find(n => n.x === point.x && n.y === point.y - 1) && (point.y = point.y - 1);
+                        !walls.find(n => n.direction === 'horizontal' && n.x === point.x && n.y === point.y) && (point.y = point.y - 1);
+                        break;
+                    case 'ArrowDown':
+                    case 's':
+                        !walls.find(n => n.direction === 'horizontal' && n.x === point.x && n.y === point.y + 1) && (point.y = point.y + 1);
+                        break;
+                    case 'ArrowLeft':
+                    case 'a':
+                        !walls.find(n => n.direction === 'vertical' && n.y === point.y && n.x === point.x) && (point.x = point.x - 1);
+                        break;
+                    case 'ArrowRight':
+                    case 'd':
+                        !walls.find(n => n.direction === 'vertical' && n.y === point.y && n.x === point.x + 1) && (point.x = point.x + 1);
+                        break;
+                }
+                paths.push({ ...point });
+                draw();
+                if (point.x === cols - 1 && point.y === rows - 1) {
+                    createMaze();
+                }
+            }
+        })();
+    </script>
+</html>

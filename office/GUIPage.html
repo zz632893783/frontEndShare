@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+			.form {
+				border: 1px solid red;
+				display: grid;
+				grid-template-columns: repeat(3, minmax(0, 1fr));
+				grid-column-gap: 64px;
+				padding: 32px;
+			}
+			.form-item {
+				display: grid;
+			}
+			label {
+				font-size: 24px;
+				line-height: 64px;
+			}
+			input {
+				line-height: 32px;
+			}
+			button {
+				padding: 12px 32px;
+				font-size: 24px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="form">
+			<div class="form-item">
+				<label>开始列数</label>
+				<input type="number" />
+			</div>
+			<div class="form-item">
+				<label>文件名</label>
+				<input />
+			</div>
+			<div class="form-item">
+				<label>起始时间</label>
+				<input />
+			</div>
+		</div>
+		<button>生成文件</button>
+		<script>
+			document.querySelector('button').onclick = () => {
+				const xhr = new XMLHttpRequest();
+				const [startCol, filename, start] = [...document.querySelectorAll('input')].map(n => n.value);
+				xhr.open('GET', `http://localhost:3100/api?startCol=${ startCol }&filename=${ filename }&start=${ start }`, true);
+				xhr.onreadystatechange = () => xhr.readyState == 4 && xhr.status == 200 && console.log(xhr.responseText);
+				xhr.send();
+			};
+		</script>
+	</body>
+</html>

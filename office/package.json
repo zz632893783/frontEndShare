@@ -1,0 +1,30 @@
+{
+  "name": "nodeOffice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "GUIEntry.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "package": "pkg excelCreateWordDay.js -o zzExe",
+    "gui-exe-build": "electron-builder --config electron.config.json && node copyResource.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "docx": "^8.5.0",
+    "electron": "^28.2.1",
+    "electron-builder": "^24.9.1",
+    "jszip": "^3.10.1",
+    "mammoth": "^1.6.0",
+    "pkg": "^5.8.1"
+  },
+  "dependencies": {
+    "cross-spawn": "^7.0.3",
+    "docxtemplater": "^3.44.0",
+    "exceljs": "^4.4.0",
+    "express": "^4.18.2",
+    "pizzip": "^3.1.6"
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "files": ["GUIEntry.js", "excelCreateWordDay.js", "util.js", "GUIPage.html", "preload.js", "./dist"],
+  "productName": "文档处理"
+}

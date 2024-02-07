@@ -1,0 +1,59 @@
+最开始接触 nodejs 一些应用
+刚工作时项目中有用到的 gulp
+再到后面 vue-cli,再到现在 vite
+以前没有意识到 node 的强大,只觉得他是一个帮助开发的工具
+过去两年时间,才开始真正体会到nodejs的强大,现在我觉得它无所不能
+
+------------------------------------------------------------------------------------------
+一
+nodejs爬虫(类似工具有很多,这里介绍puppeteer)
+1.爬取豆瓣Top250数据(./puppeteer 运行 node doubanTop250.js)
+2.自动化测试,从统一门户登录,然后打开移动运营中心PC管理端,选择 banner 管理,创建一条记录(./puppeteer 运行 node createBanner.js)
+3.禅道日志爬取（./puppeteer 运行 node zentao.js，想要生成日志调用 gpt 接口）
+4.数据自动生成图表类视频（没啥意义，不过比较有意思）(./puppeteer 运行 node chartVideo.js)
+
+------------------------------------------------------------------------------------------
+二
+操控电脑 api (robotjs)
+1.操作鼠标
+	(1)鼠标双击打开(在桌面打开程序 ./robotjs 运行 node mouseOpenApp.js)
+	(2)鼠标拖拽，然后左键(在桌面框选 ./robotjs 运行 node mouseDrag.js)
+	(3)鼠标右键复制，然后粘贴(在桌面选择 ./robotjs 运行 node mouseRight.js)
+	(4)画图绘制一段正弦函数(打开画图后 ./robotjs 运行 node drawSin.js)
+2.操作键盘(桌面打开文本，输入一段内容 ./robotjs 运行 node keyboard.js)
+3.电脑遥控器( ./robotjs 运行 node remoteControl.js，然后打开手机浏览器，输入 http://10.10.4.53:8080/ 控制电脑)
+4.获取屏幕信息
+	(1)屏幕截图保存(./robotjs 运行 node screenCapture.js，在 robotjs 路径下会生成 screenshot.png)
+	(2)迷宫寻路(打开 index.html，全屏后 ./robotjs 运行 node mazePath.js)
+5.网页版向日葵（ ./robotjs 运行 node remoteDesktop.js，输入 http://10.10.4.53:8080/#/remoteDesktop 控制电脑）
+6.演示 demo，10.10.120.211:30100/login 模拟操作破解验证码（ ./robotjs 运行 node demonstrateScript.js）
+
+------------------------------------------------------------------------------------------
+三
+tensorflow.js 调用硬件
+机器学习 https://deeplearning.zzgpt.asia/#/cifar10
+
+------------------------------------------------------------------------------------------
+四
+nodejs 替代软件，实现请求代理
+系统右下角网络右键 > 网络和 Internet 设置 > 代理 > 手动设置代理编辑 > 开启使用代理服务， 代理 IP 127.0.0.1 端口 8001
+然后运行 ./anyproxy 运行 anyproxy --intercept --silent --rule index.js -i --ignore-unauthorized-ssl
+1.羊了个羊修改地图数据（最好先用 charles 看下接口数据，2024年2月6日12:54:25 测试结果，地图接口为 https://cat-match\easygame2021\com/sheep/v1/game/map_info_ex，将 map_md5 字段数组 1 位置改为跟 0 位置一样）
+2.B 站大会员答题脚本
+https://www.bilibili.com/video/BV1pw41157A6 项目地址 https://github.com/zz632893783/nodejsAnyProxy.git
+手机点击调用接口 > 经过电脑代理 > 截取接口内容 > 调动 GPT 接口获得答案 > 题目/答案显示在页面中
+3.修改大麦网抢票预购页面返回数据（待研究中）
+
+------------------------------------------------------------------------------------------
+
+五
+用 nodejs 制作软件
+1.excel 表格生成 word 日报(./office 下运行 node excelCreateWordDay.js 创建日报)
+2.给其他前端或者程序员知道怎么使用脚本，但是非开发人员，需要装 node 环境，需要会看 js 代码（./office 下运行 npm run package 打包，运行 .exe 即可执行跟 node 相同效果）
+3.打包完程序无法修改，只能执行指定目录下，定死了获取的单元格内容，它还不够像一个软件
+4.发挥想象力，写一个代码编辑器(./vscode 下运行 npm run build 打包 vite 项目，运行 npm run exe-build 打包 .exe 文件)
+
+------------------------------------------------------------------------------------------
+六
+自己实现一些接口，mysql 模块使用 SQL 语句查询操作数据库，跨域代理等
+
